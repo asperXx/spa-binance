@@ -40,6 +40,7 @@
           fluid
         >
           <v-row
+          justify="center"
           >
             <router-view />
           </v-row>
@@ -55,12 +56,24 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data: () => ({
     drawer: null,
   }),
   created () {
-    this.$vuetify.theme.dark = true
+    this.$vuetify.theme.dark = true;
+
+      axios
+        .get("https://api.binance.com/api/v3/depth", {
+          params: {
+            symbol: 'BTCUSDT',
+            limit: 100
+          }
+        })
+        .then(response => (
+          this.$store.state.activeSymbolInfo.unshift(response.data.bids, response.data.asks)
+          ))
   },
 }
 </script>
